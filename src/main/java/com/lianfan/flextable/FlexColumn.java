@@ -63,14 +63,14 @@ public class FlexColumn<T,R> implements Comparable<FlexColumn<T,R>>{
      */
     protected Function<R,? extends Serializable> render;
 
-    private List<FlexColumn> children;
+    private List<FlexColumn<T,?>> children;
 
     /**
      * 列属性
      */
     public Map<String,Object> properties;
 
-    public FlexColumn(@NotNull String dataIndex,@NotNull String title,@NotNull Integer order,Function<? super T, ? extends R> mapper,Function<R, ? extends Serializable> render,List<FlexColumn> children,@NotNull Map<String, Object> properties) {
+    public FlexColumn(@NotNull String dataIndex,@NotNull String title,@NotNull Integer order,Function<? super T, ? extends R> mapper,Function<R, ? extends Serializable> render,List<FlexColumn<T,?>> children,@NotNull Map<String, Object> properties) {
         this.dataIndex = dataIndex;
         this.title = title;
         this.mapper = mapper;this.order = order;
@@ -131,6 +131,10 @@ public class FlexColumn<T,R> implements Comparable<FlexColumn<T,R>>{
         return properties.get(key);
     }
 
+    public Map<String, Object> getProperties() {
+        return properties;
+    }
+
     public Boolean getActive() {
         return active;
     }
@@ -139,7 +143,7 @@ public class FlexColumn<T,R> implements Comparable<FlexColumn<T,R>>{
         this.active = active;
     }
 
-    public List<FlexColumn> getChildren() {
+    public List<FlexColumn<T,?>> getChildren() {
         return children;
     }
 

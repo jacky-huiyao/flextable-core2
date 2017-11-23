@@ -11,6 +11,8 @@ public class FlexCell {
     private String text;
     private Integer rowSpan;
     private Integer colSpan;
+    private Integer rowNo;
+    private Integer colNo;
     private Map<String,Object> properties;
 
     public FlexCell(String text) {
@@ -56,5 +58,21 @@ public class FlexCell {
             this.properties = new HashMap<>();
         }
         this.properties.putAll(properties);
+    }
+
+    public Integer getRowNo() {
+        return rowNo;
+    }
+
+    public void setRowNo(Integer rowNo) {
+        this.rowNo = rowNo;
+    }
+
+    public Integer getColNo() {
+        return colNo;
+    }
+
+    public void setColNo(Integer colNo) {
+        this.colNo = colNo;
     }
 }

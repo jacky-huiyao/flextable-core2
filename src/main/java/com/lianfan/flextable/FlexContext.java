@@ -12,6 +12,12 @@ import java.util.stream.Collectors;
  * @param <T> the type parameter
  */
 public class FlexContext<T> {
+
+    private Integer x=0;
+    private Integer y=0;
+    private Integer colWidth;
+    private Integer colHeight;
+    private List<FlexCell> colCells;
     /**
      * 维护所有列
      */
@@ -23,15 +29,25 @@ public class FlexContext<T> {
     /**
      * create by renderColumn function
      */
-    private List<FlexCell> rendedColumns;
-    private Integer colWidth;
-    private Integer colHeight;
+    private Map<String,FlexCell> dataCellMap;
+    private Map<String,List<String>> rowTagMap = new HashMap<>();
+    private Map<String,FlexRow<T>> rowMap = new HashMap<>();
 
 
     public final String delimiter = ":";
 
     public FlexContext() {
         colTagMap.put("root", new LinkedList<>());
+    }
+
+    /**
+     * 设置表格的位置
+     * @param x 左上角x坐标,水平
+     * @param y 左上角y坐标,垂直
+     */
+    public void setPosition(Integer x,Integer y){
+        this.x=x;
+        this.y=y;
     }
 
     /**
@@ -161,30 +177,51 @@ public class FlexContext<T> {
     }
 
     public void renderColumn(int x,int y){
-        Map<Integer,List<FlexColumn<T,?>>> rowGroupCol = new HashMap<>();
         colWidth=0;
         colHeight=0;
-        int rowNo=x;
-        int colNo=y;
+        renderColumnColSpan();
+        renderColCell(getRootColumns(),x,y);
+    }
+
+    public void renderColumnColSpan(){
         colTagMap.get("root").forEach(k->{
             final FlexColumn<T,?> column = colMap.get(k);
-            colWidth+=calculateColSpan(column);
+            calculateColSpanAndColHeight(column,column.getRowSpan());
         });
     }
 
-    private Integer calculateColSpan(FlexColumn<T,?> column){
+    private Integer calculateColSpanAndColHeight(FlexColumn<T,?> column,Integer deep){
         if(column.getChildren()!=null){
             int cspan=0;
             for(FlexColumn col:column.getChildren()){
-                cspan+=calculateColSpan(col);
+                cspan+=calculateColSpanAndColHeight(col,deep+col.getRowSpan());
             }
             column.setColSpan(cspan);
             return cspan;
         }
+        if(deep>colHeight){
+            colHeight=deep;
+        }
         return column.getColSpan();
     }
 
-    public void buildRowGroupColMap(){
-
+    private void renderColCell(List<FlexColumn<T,?>> columns,Integer x,Integer y){
+        int colNo=x;
+        for(FlexColumn<T,?> column:columns){
+            if(column.getRowSpan()>0 && column.getColSpan()>0) {
+                FlexCell cell = new FlexCell(column.getTitle(), column.getRowSpan(), column.getColSpan(), column.getProperties());
+                cell.setColNo(colNo);
+                cell.setRowNo(y);
+                if(column.getChildren()==null){
+                    cell.setRowSpan(this.y+colHeight-y);
+                }
+                colCells.add(cell);
+                colNo+=column.getColSpan();
+            }
+            if(column.getChildren()!=null){
+                renderColCell(column.getChildren(),x,y+column.getRowSpan());
+            }
+        }
     }
+
 }
