@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * user: zhangyaohui
  * date: 2017/11/23
@@ -8,6 +10,7 @@ public class Main {
         String key = "root";
         key=key.substring(0,key.lastIndexOf(":"));
         System.out.println(key);
+
 
     }
 }
