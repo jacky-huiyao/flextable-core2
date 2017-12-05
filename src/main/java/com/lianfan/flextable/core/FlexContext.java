@@ -12,8 +12,8 @@ public class FlexContext<T> {
     private Map<String,List<String>> colRowMap;
     private List<T> data;
     private List<FlexColumn<?,T,?,?>> columns;
-
     public void addColumn(FlexColumn column,FlexColumn parent){
+
         if(column.getDataIndex()!=null){
             colMap.put(column.getDataIndex(),column);
             if(!column.getChildren().isEmpty()){
